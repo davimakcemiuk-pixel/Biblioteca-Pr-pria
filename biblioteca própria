@@ -1,0 +1,71 @@
+<h1>Biblioteca Pessoal</h1>
+<input type="text" placeholder="digite o nome do livro" id="livro">
+<input type="text" placeholder="digite o nome do autor" id="autor">
+<button onclick="cadastrar()">cadastrar</button>
+<button onclick="visualizar()">Visualizar</button>
+<div id="lista"></div>
+
+<script>
+    let _livroCadastrado = JSON.parse(localStorage.getItem('livroCadastrado')) || []
+
+    function cadastrar () {
+        let livro = document.getElementById('livro').value
+        let autor = document.getElementById('autor').value
+        
+        let livroCadastrado = {
+            'livro': livro,
+            autor
+        }
+        
+        let existe = false
+        _livroCadastrado.forEach((livroCadastrado) => {
+            if (livro === livroCadastrado.livro) {
+                existe = true
+            }
+        })
+        
+        if (existe) {
+            alert('livro já cadastrado')
+        } else {
+            _livroCadastrado.push(livroCadastrado)
+            localStorage.setItem('livroCadastrado', JSON.stringify(_livroCadastrado))
+        }       
+    }
+
+    function visualizar() {
+        let lista = document.getElementById('lista')
+        lista.innerHTML = ''
+
+        _livroCadastrado.forEach((livroCadastrado, i) => {
+            lista.innerHTML += `livro: ${livroCadastrado.livro} <br>
+                <button onclick="deletar(${i})">
+                    deletar
+                </button>
+                <button onclick="editar(${i})">
+                    editar
+                </button>
+                <br><br>
+            `
+        });
+    }
+
+    function editar(i) {
+        let novoLivro = prompt('digite o novo livro', _livroCadastrado[i].livro)
+        let novoAutor = prompt('digite o novo autor', _livroCadastrado[i].autor)
+
+        if (novoLivro){
+            _livroCadastrado[i].livro = novoLivro
+            _livroCadastrado[i].autor = novoAutor
+
+            visualizar()
+            localStorage.setItem('livroCadastrado', JSON.stringify(_livroCadastrado))
+        }
+    }
+
+    function deletar(i) {
+        alert('deletado com sucesso')
+        _livroCadastrado.splice(i, 1)
+        visualizar()
+        localStorage.setItem('livroCadastrado', JSON.stringify(_livroCadastrado))
+    }
+</script>
